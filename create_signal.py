@@ -27,82 +27,149 @@ class CreateSignalWindow(uiclass, baseclass):
         self.x = [i/10 for i in range(-10000, 10000)]
         self.y = []
 
-        self.frequency = 1
-        self.frequency_unit = 1
+        self.cosine_frequency = 1
+        self.cosine_frequency_unit = 1
+        
+        self.sine_frequency = 1
+        self.sine_frequency_unit = 1
 
-        self.amplitude = 1
-        self.amplitude_unit = 10**(-6)
+        self.cosine_amplitude = 1
+        self.cosine_amplitude_unit = 1
 
-        self.phase = 0;
+        self.sine_amplitude = 1
+        self.sine_amplitude_unit = 1
+
+        self.cosine_phase = 0;
+
+        self.sine_phase = 0;
 
         # Connecting UI controls to events
         self._initialize_signals_slots()
-        self.frequency_comboBox.addItem('Hz')
-        self.frequency_comboBox.addItem('kHz')
-        self.frequency_comboBox.addItem('MHz')
+        self.cosine_frequency_comboBox.addItem('Hz')
+        self.cosine_frequency_comboBox.addItem('kHz')
+        self.cosine_frequency_comboBox.addItem('MHz')
 
-        self.amplitude_comboBox.addItem('m')
-        self.amplitude_comboBox.addItem('mm')
-        self.amplitude_comboBox.addItem('µm')
+        self.sine_frequency_comboBox.addItem('Hz')
+        self.sine_frequency_comboBox.addItem('kHz')
+        self.sine_frequency_comboBox.addItem('MHz')
 
-        self.frequency_slider.setMinimum(1)
-        self.frequency_slider.setMaximum(1000)
+        self.cosine_amplitude_comboBox.addItem('m')
+        self.cosine_amplitude_comboBox.addItem('mm')
+        self.cosine_amplitude_comboBox.addItem('µm')
 
-        self.amplitude_slider.setMinimum(1)
-        self.amplitude_slider.setMaximum(1000)
+        self.sine_amplitude_comboBox.addItem('m')
+        self.sine_amplitude_comboBox.addItem('mm')
+        self.sine_amplitude_comboBox.addItem('µm')
 
-        self.phase_slider.setMinimum(-180)
-        self.phase_slider.setMaximum(180)
+        self.cosine_frequency_slider.setMinimum(1)
+        self.cosine_frequency_slider.setMaximum(1000)
+
+        self.sine_frequency_slider.setMinimum(1)
+        self.sine_frequency_slider.setMaximum(1000)
+
+        self.cosine_amplitude_slider.setMinimum(1)
+        self.cosine_amplitude_slider.setMaximum(1000)
+
+        self.sine_amplitude_slider.setMinimum(1)
+        self.sine_amplitude_slider.setMaximum(1000)
+
+        self.cosine_phase_slider.setMinimum(-180)
+        self.cosine_phase_slider.setMaximum(180)
+        
+        self.sine_phase_slider.setMinimum(-180)
+        self.sine_phase_slider.setMaximum(180)
 
         self.signal_graph.setXRange(-180,180)
         self._update_plot()
 
 
     def _initialize_signals_slots(self):
-       self.frequency_slider.valueChanged.connect(self._on_freq_slider_change)
-       self.amplitude_slider.valueChanged.connect(self._on_amp_slider_change)
-       self.phase_slider.valueChanged.connect(self._on_phase_slider_change)
+       self.cosine_frequency_slider.valueChanged.connect(self._on_cosine_freq_slider_change)
+       self.cosine_amplitude_slider.valueChanged.connect(self._on_cosine_amp_slider_change)
+       self.cosine_phase_slider.valueChanged.connect(self._on_cosine_phase_slider_change)
 
-       self.frequency_comboBox.currentTextChanged.connect(self._on_freq_combobox_change)
-       self.amplitude_comboBox.currentTextChanged.connect(self._on_amp_combobox_change)
+       self.cosine_frequency_comboBox.currentTextChanged.connect(self._on_cosine_freq_combobox_change)
+       self.cosine_amplitude_comboBox.currentTextChanged.connect(self._on_cosine_amp_combobox_change)
+
+       self.sine_frequency_slider.valueChanged.connect(self._on_sine_freq_slider_change)
+       self.sine_amplitude_slider.valueChanged.connect(self._on_sine_amp_slider_change)
+       self.sine_phase_slider.valueChanged.connect(self._on_sine_phase_slider_change)
+
+       self.sine_frequency_comboBox.currentTextChanged.connect(self._on_sine_freq_combobox_change)
+       self.sine_amplitude_comboBox.currentTextChanged.connect(self._on_sine_amp_combobox_change)
 
        self.save_signal_button.clicked.connect(self.save_signal)
        
 
   
-    def _on_freq_slider_change(self, value):
-        self.frequency = value
-        self.frequency_value.setText(str(value) + ' '+ self.frequency_comboBox.currentText())
+    def _on_cosine_freq_slider_change(self, value):
+        self.cosine_frequency = value
+        self.cosine_frequency_value.setText(str(value) + ' '+ self.cosine_frequency_comboBox.currentText())
         self._update_plot()
 
-    def _on_amp_slider_change(self, value):
-        self.amplitude = value
-        self.amplitude_value.setText(str(value) + ' '+ self.amplitude_comboBox.currentText())
+    def _on_sine_freq_slider_change(self, value):
+        self.sine_frequency = value
+        self.sine_frequency_value.setText(str(value) + ' '+ self.sine_frequency_comboBox.currentText())
         self._update_plot()
 
-    def _on_phase_slider_change(self, value):
-        self.phase = value
-        self.phase_value.setText(str(value) + '°')
+    def _on_cosine_amp_slider_change(self, value):
+        self.cosine_amplitude = value
+        self.cosine_amplitude_value.setText(str(value) + ' '+ self.cosine_amplitude_comboBox.currentText())
         self._update_plot()
 
-    def _on_freq_combobox_change(self, value):
+    def _on_sine_amp_slider_change(self, value):
+        self.sine_amplitude = value
+        self.sine_amplitude_value.setText(str(value) + ' '+ self.sine_amplitude_comboBox.currentText())
+        self._update_plot()
+
+    def _on_sine_phase_slider_change(self, value):
+        self.sine_phase = value
+        self.sine_phase_value.setText(str(value) + '°')
+        self._update_plot()
+
+    def _on_cosine_phase_slider_change(self, value):
+        self.cosine_phase = value
+        self.cosine_phase_value.setText(str(value) + '°')
+        self._update_plot()
+
+    def _on_cosine_freq_combobox_change(self, value):
         if value == 'Hz':
-            self.frequency_unit = 1
+            self.cosine_frequency_unit = 1
         elif value == 'kHz':
-            self.frequency_unit = 10**3
+            self.cosine_frequency_unit = 10**3
         elif value == 'MHz':
-            self.frequency_unit = 10**6
-        self.frequency_value.setText(str(self.frequency) + ' '+ value) 
+            self.cosine_frequency_unit = 10**6
+        self.cosine_frequency_value.setText(str(self.cosine_frequency) + ' '+ value) 
         self._update_plot()
 
-    def _on_amp_combobox_change(self, value):
+    def _on_sine_freq_combobox_change(self, value):
+        if value == 'Hz':
+            self.sine_frequency_unit = 1
+        elif value == 'kHz':
+            self.sine_frequency_unit = 10**3
+        elif value == 'MHz':
+            self.sine_frequency_unit = 10**6
+        self.sine_frequency_value.setText(str(self.sine_frequency) + ' '+ value) 
+        self._update_plot()
+
+    def _on_cosine_amp_combobox_change(self, value):
         if value == 'µm':
-            self.amplitude_unit = 10**(-6)
+            self.cosine_amplitude_unit = 10**(-6)
         elif value == 'mm':
-            self.amplitude_unit = 10**(-3)
+            self.cosine_amplitude_unit = 10**(-3)
         elif value == 'm':
-            self.amplitude_unit = 1
-        self.amplitude_value.setText(str(self.amplitude) + ' '+ value)  
+            self.cosine_amplitude_unit = 1
+        self.cosine_amplitude_value.setText(str(self.cosine_amplitude) + ' '+ value)  
+        self._update_plot()
+
+    def _on_sine_amp_combobox_change(self, value):
+        if value == 'µm':
+            self.sine_amplitude_unit = 10**(-6)
+        elif value == 'mm':
+            self.sine_amplitude_unit = 10**(-3)
+        elif value == 'm':
+            self.sine_amplitude_unit = 1
+        self.sine_amplitude_value.setText(str(self.sine_amplitude) + ' '+ value)  
         self._update_plot()
 
     def _update_plot(self):
@@ -113,7 +180,9 @@ class CreateSignalWindow(uiclass, baseclass):
     def _generate_list(self):
         self.y.clear()
         for i in self.x:
-            self.y.append(self.amplitude * self.amplitude_unit * cos(self.frequency * self.frequency_unit *(i - self.phase) * (pi/180)))
+            cosine_term = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency * self.cosine_frequency_unit *(i - self.cosine_phase) * (pi/180))
+            sine_term = self.sine_amplitude * self.sine_amplitude_unit * cos(self.sine_frequency * self.sine_frequency_unit *(i - self.sine_phase) * (pi/180))
+            self.y.append(cosine_term + sine_term)
 
     def save_signal(self):
         # Create a Signal object from the input data
