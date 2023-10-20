@@ -23,7 +23,7 @@ class CreateSignalWindow(uiclass, baseclass):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setWindowTitle("Create Signal")
+        self.setWindowTitle("Composer - Create Signal")
         self.x = [i/10 for i in range(-10000, 10000)]
         self.y = []
 

@@ -34,11 +34,11 @@ class MainWindow(uiclass, baseclass):
         self.sampling_curve = None
         self.reconstruct_curve = None
         self.error_curve = None
-        self.f_sampling = int(MAX_F_SAMPLING / 2)
+        self.f_sampling = 0 # Initial f_sampling
         self.sampling_freq_slider.setMinimum(0)
         self.sampling_freq_slider.setMaximum(MAX_F_SAMPLING)
-        self.original_signal_graph.setXRange(0, 1)
-        self.reconstructed_signal_graph.setXRange(0, 1)
+        # self.original_signal_graph.setXRange(0, 1)
+        # self.reconstructed_signal_graph.setXRange(0, 1)
 
         # Connecting UI controls to events
         self._initialize_signals_slots()
