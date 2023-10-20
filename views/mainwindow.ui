@@ -515,7 +515,7 @@ QListWidget {
          </widget>
         </item>
         <item>
-         <widget class="PlotWidget" name="original_signal_graph_2" native="true"/>
+         <widget class="PlotWidget" name="reconstructed_signal_graph" native="true"/>
         </item>
        </layout>
       </item>
