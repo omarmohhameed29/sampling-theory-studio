@@ -18,7 +18,7 @@ class CreateSignalWindow(uiclass, baseclass):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("Create Signal")
-        self.x = [i for i in range(-1000, 1000)]
+        self.x = [i/10 for i in range(-10000, 10000)]
         self.y = []
 
         self.frequency = 1
@@ -35,9 +35,9 @@ class CreateSignalWindow(uiclass, baseclass):
         self.frequency_comboBox.addItem('kHz')
         self.frequency_comboBox.addItem('MHz')
 
-        self.amplitude_comboBox.addItem('µm')
-        self.amplitude_comboBox.addItem('mm')
         self.amplitude_comboBox.addItem('m')
+        self.amplitude_comboBox.addItem('mm')
+        self.amplitude_comboBox.addItem('µm')
 
         self.frequency_slider.setMinimum(1)
         self.frequency_slider.setMaximum(1000)
@@ -104,8 +104,6 @@ class CreateSignalWindow(uiclass, baseclass):
 
     def _generate_list(self):
         self.y.clear()
-        print(self.amplitude_unit)
-        print(self.frequency_unit)
         for i in self.x:
             self.y.append(self.amplitude * self.amplitude_unit * sin(self.frequency * self.frequency_unit *(i - self.phase) * (pi/180)))
 def main():
