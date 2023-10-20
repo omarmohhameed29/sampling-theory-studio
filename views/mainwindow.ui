@@ -538,7 +538,7 @@ QListWidget {
          </widget>
         </item>
         <item>
-         <widget class="PlotWidget" name="original_signal_graph_3" native="true"/>
+         <widget class="PlotWidget" name="error_signal_graph" native="true"/>
         </item>
        </layout>
       </item>
@@ -657,7 +657,7 @@ color:  #2196F3;</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
