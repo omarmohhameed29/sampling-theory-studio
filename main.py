@@ -34,7 +34,7 @@ class MainWindow(uiclass, baseclass):
         self.sampling_curve = None
         self.reconstruct_curve = None
         self.error_curve = None
-        self.f_sampling = 0 # Initial f_sampling
+        self.f_sampling = 150 # Initial f_sampling, can't be = zero (VIMP) to avoid logical and mathematical errors.
         self.sampling_freq_slider.setMinimum(0)
         self.sampling_freq_slider.setMaximum(MAX_F_SAMPLING)
         # self.original_signal_graph.setXRange(0, 1)
