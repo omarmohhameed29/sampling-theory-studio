@@ -3,9 +3,12 @@ import sys
 
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
+from PyQt6.QtCore import pyqtSignal
 import pyqtgraph as pg
 from numpy import sin, cos, pi
 import numpy as np
+
+from models.signal import Signal
 
 mainwindow_ui_file_path = os.path.join(os.path.dirname(__file__), 'views', 'create_signal_window.ui')
 uiclass, baseclass = pg.Qt.loadUiType(mainwindow_ui_file_path)
@@ -14,6 +17,9 @@ uiclass, baseclass = pg.Qt.loadUiType(mainwindow_ui_file_path)
 MAX_F_SAMPLING = 500
 
 class CreateSignalWindow(uiclass, baseclass):
+    signal_saved = pyqtSignal(Signal)
+    window_closed = pyqtSignal()
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -59,6 +65,8 @@ class CreateSignalWindow(uiclass, baseclass):
 
        self.frequency_comboBox.currentTextChanged.connect(self._on_freq_combobox_change)
        self.amplitude_comboBox.currentTextChanged.connect(self._on_amp_combobox_change)
+
+       self.save_signal_button.clicked.connect(self.save_signal)
        
 
   
@@ -105,7 +113,19 @@ class CreateSignalWindow(uiclass, baseclass):
     def _generate_list(self):
         self.y.clear()
         for i in self.x:
-            self.y.append(self.amplitude * self.amplitude_unit * sin(self.frequency * self.frequency_unit *(i - self.phase) * (pi/180)))
+            self.y.append(self.amplitude * self.amplitude_unit * cos(self.frequency * self.frequency_unit *(i - self.phase) * (pi/180)))
+
+    def save_signal(self):
+        # Create a Signal object from the input data
+        t = self.x
+        y = self.y
+        signal = Signal(t, y)
+        
+        # Emit the signal_saved signal with the Signal object as the argument
+        self.signal_saved.emit(signal)
+        
+        self.window_closed.emit()
+        
 def main():
     app = QApplication(sys.argv)
     window = CreateSignalWindow()

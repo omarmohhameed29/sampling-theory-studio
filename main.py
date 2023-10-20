@@ -3,11 +3,13 @@ import sys
 
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
+from PyQt6.QtCore import pyqtSlot
 import pyqtgraph as pg
 
 from models.signal import Signal
 from models.sampler import Sampler
 from models.reconstructor import Reconstructor
+from create_signal import CreateSignalWindow
 
 from helpers.get_signal_from_file import get_signal_from_file
 import numpy as np
@@ -45,6 +47,38 @@ class MainWindow(uiclass, baseclass):
         # Menu items - File
         self.actionOpen_Signal.triggered.connect(self._open_signal_file)
         self.sampling_freq_slider.valueChanged.connect(self._on_slider_change)
+        
+        
+        self.actionComposer.triggered.connect(self.open_composer)
+        
+
+    def open_composer(self):
+        # Initialize the create_signal_window attribute
+        self.create_signal_window = CreateSignalWindow()
+
+        # Connect the signal_saved signal from the create_signal window to the render_composer_signal method
+        self.create_signal_window.signal_saved.connect(self.render_composer_signal)
+
+        # Connect the window_closed signal from the create_signal window to the close_create_signal_window method
+        self.create_signal_window.window_closed.connect(self.close_create_signal_window)
+
+        # Show the create_signal window
+        self.create_signal_window.show()
+        
+    @pyqtSlot(Signal)
+    def render_composer_signal(self, signal):
+        # Render the CONTINUOUS signal
+        pen_c = pg.mkPen(color=(255, 255, 255))
+        self.original_signal_graph.plot(signal.x_vec, signal.y_vec, pen=pen_c)
+
+        self.signal = signal
+
+        # self._render_signal()  ---> This is causing an error
+    @pyqtSlot()
+    def close_create_signal_window(self):
+        # Close the create_signal window
+        self.create_signal_window.close()
+
 
     def _open_signal_file(self):
         # self.signal: Signal = get_signal_from_file(self)
