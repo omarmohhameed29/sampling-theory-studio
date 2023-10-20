@@ -77,7 +77,7 @@ class MainWindow(uiclass, baseclass):
 
         if self.f_sampling > 0:
             self.sampled_signal = self.sampler.sample(self.f_sampling)
-            # Render the sampled points on origianl signal
+            # Render the sampled points on original signal
             self.sampling_curve = self.original_signal_graph.plot(
                 self.sampled_signal.x_vec,
                 self.sampled_signal.y_vec,
