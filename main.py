@@ -37,6 +37,7 @@ class MainWindow(uiclass, baseclass):
         self.f_sampling = 150 # Initial f_sampling, can't be = zero (VIMP) to avoid logical and mathematical errors.
         self.sampling_freq_slider.setMinimum(0)
         self.sampling_freq_slider.setMaximum(MAX_F_SAMPLING)
+        self.num_of_graphs = 0 # Calculate number of graphs to prevent slider error when no graph displayed
         # self.original_signal_graph.setXRange(0, 1)
         # self.reconstructed_signal_graph.setXRange(0, 1)
 
@@ -47,8 +48,6 @@ class MainWindow(uiclass, baseclass):
         # Menu items - File
         self.actionOpen_Signal.triggered.connect(self._open_signal_file)
         self.sampling_freq_slider.valueChanged.connect(self._on_slider_change)
-        
-        
         self.actionComposer.triggered.connect(self.open_composer)
         
 
@@ -64,6 +63,7 @@ class MainWindow(uiclass, baseclass):
 
         # Show the create_signal window
         self.create_signal_window.show()
+        self.num_of_graphs += 1
         
     @pyqtSlot(Signal)
     def render_composer_signal(self, signal):
@@ -96,10 +96,12 @@ class MainWindow(uiclass, baseclass):
         self._render_signal()
 
     def _on_slider_change(self, value):
-        self.f_sampling = value
-        self._render_signal()
+        if self.num_of_graphs > 0:
+            self.f_sampling = value
+            self._render_signal()
 
     def _render_signal(self):
+        self.num_of_graphs += 1
         self._resample()
         self._reconstruct()
         self._display_error_signal()
