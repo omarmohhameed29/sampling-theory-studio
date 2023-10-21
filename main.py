@@ -49,7 +49,7 @@ class MainWindow(uiclass, baseclass):
         self.actionOpen_Signal.triggered.connect(self._open_signal_file)
         self.sampling_freq_slider.valueChanged.connect(self._on_slider_change)
         self.actionComposer.triggered.connect(self.open_composer)
-        
+
 
     def open_composer(self):
         # Initialize the create_signal_window attribute
@@ -64,7 +64,7 @@ class MainWindow(uiclass, baseclass):
         # Show the create_signal window
         self.create_signal_window.show()
         self.num_of_signals += 1
-        
+
     @pyqtSlot(Signal)
     def render_composer_signal(self, signal):
         # Render the CONTINUOUS signal
@@ -149,6 +149,17 @@ class MainWindow(uiclass, baseclass):
         if self.error_curve is not None:
             self.error_signal_graph.removeItem(self.error_curve)
         self.error_curve = self.error_signal_graph.plot(self.signal.x_vec, y_vec_error, pen=pen_b)
+
+    def add_gaussian_noise(self):
+        # todo Noise should be inserted by the user as SNR then calculate its amplitude
+        noise_amplitude = 0.1  # Adjust this value to control the noise level
+        noise = np.random.normal(0, noise_amplitude, len(self.signal.x_vec))
+
+        # Add Noise to original signal
+        self.signal.y_vec += noise
+
+        # Render signal after Noise addition
+        self._render_signal()
 
 
 def main():
