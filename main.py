@@ -53,6 +53,7 @@ class MainWindow(uiclass, baseclass):
         self.sampling_freq_slider.valueChanged.connect(self._on_freq_slider_change)
         self.snr_slider.valueChanged.connect(self._on_snr_slider_change)
         self.actionComposer.triggered.connect(self.open_composer)
+        self.double_Fmax.clicked.connect(self._double_Fsampling)
 
     def open_composer(self):
         # Initialize the create_signal_window attribute
@@ -75,8 +76,10 @@ class MainWindow(uiclass, baseclass):
         self.original_signal_graph.plot(signal.x_vec, signal.y_vec, pen=pen_c)
 
         self.signal = signal
+        self.f_sampling = 2*self.signal.get_max_freq()
 
-        # self._render_signal()  ---> This is causing an error
+        self._render_signal()
+        
 
     @pyqtSlot()
     def close_create_signal_window(self):
@@ -84,18 +87,19 @@ class MainWindow(uiclass, baseclass):
         self.create_signal_window.close()
 
     def _open_signal_file(self):
-        # self.signal: Signal = get_signal_from_file(self)
+        self.signal: Signal = get_signal_from_file(self)
 
         # Create a cos wave signal for testing
-        sin_freq_hz = 20
-        t = np.linspace(0, 1, 1000)
-        y = np.cos(2 * np.pi * sin_freq_hz * t)
-        self.signal = Signal(t, y)
+        
+        # sin_freq_hz = 20
+        # t = np.linspace(0, 1, 1000)
+        # y = np.cos(2 * np.pi * sin_freq_hz * t)
+        # self.signal = Signal(t, y)
 
         # Render the CONTINUOUS signal
         pen_c = pg.mkPen(color=(255, 255, 255))
         self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
-
+        self.f_sampling = 2*self.signal.get_max_freq()
         self._render_signal()
 
     def _on_freq_slider_change(self, value):
@@ -104,6 +108,7 @@ class MainWindow(uiclass, baseclass):
             self._render_signal()
 
     def _render_signal(self):
+        
         self.num_of_signals += 1
         self._resample()
         self._reconstruct()
@@ -165,7 +170,7 @@ class MainWindow(uiclass, baseclass):
 
         # render noised signal
         self._render_signal()
-
+    
 
 
 
@@ -177,6 +182,11 @@ class MainWindow(uiclass, baseclass):
             else:
                 self.snr_label.setText(str(value) + ' DB')
                 self.add_gaussian_noise()
+
+    def _double_Fsampling(self):
+        if self.num_of_signals > 0 and self.f_sampling < MAX_F_SAMPLING:
+            self.f_sampling = 2*self.f_sampling
+            self._render_signal()
 
 
 def main():

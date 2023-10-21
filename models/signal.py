@@ -1,4 +1,6 @@
 from enum import Enum
+from scipy.fft import fft, fftfreq
+import numpy as np
 
 class SignalType(Enum):
     CONTINUOUS = 0
@@ -10,4 +12,10 @@ class Signal:
         self.y_vec = y_vec
         self.signal_type = signal_type
         self.SNR = SNR
-        
+
+    def get_max_freq(self):
+        fft_y = fft(self.y_vec)
+        frequencies = fftfreq(len(self.y_vec), d=(self.x_vec[1] - self.x_vec[0]))
+        index = np.argmax(np.abs(fft_y))
+        fmax = int(np.abs(frequencies[index]))
+        return fmax
