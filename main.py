@@ -176,7 +176,6 @@ class MainWindow(uiclass, baseclass):
                 self.snr_label.setText('∞ DB')
             else:
                 self.snr_label.setText(str(value) + ' DB')
-                self.original_signal = self.signal
                 self.add_gaussian_noise()
 
 
