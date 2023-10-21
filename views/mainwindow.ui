@@ -634,6 +634,42 @@ color:  #2196F3;</string>
         </widget>
        </item>
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="styleSheet">
+            <string notr="true">font-size: 12px;</string>
+           </property>
+           <property name="text">
+            <string>SNR</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="snr_label">
+           <property name="styleSheet">
+            <string notr="true">font-size: 12px;
+text-align: right;
+color:  #2196F3;</string>
+           </property>
+           <property name="text">
+            <string>∞ DB</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QSlider" name="snr_slider">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

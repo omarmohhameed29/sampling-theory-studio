@@ -37,6 +37,9 @@ class MainWindow(uiclass, baseclass):
         self.f_sampling = 150 # Initial f_sampling, can't be = zero (VIMP) to avoid logical and mathematical errors.
         self.sampling_freq_slider.setMinimum(0)
         self.sampling_freq_slider.setMaximum(MAX_F_SAMPLING)
+        self.snr_slider.setMinimum(0)
+        self.snr_slider.setMaximum(100)
+        self.snr_slider.setValue(100)
         self.num_of_signals = 0 # Calculate number of graphs to prevent slider error when no graph displayed
         # self.original_signal_graph.setXRange(0, 1)
         # self.reconstructed_signal_graph.setXRange(0, 1)
@@ -48,6 +51,7 @@ class MainWindow(uiclass, baseclass):
         # Menu items - File
         self.actionOpen_Signal.triggered.connect(self._open_signal_file)
         self.sampling_freq_slider.valueChanged.connect(self._on_slider_change)
+        self.snr_slider.valueChanged.connect(self._on_snr_slider_change)
         self.actionComposer.triggered.connect(self.open_composer)
 
 
@@ -161,6 +165,13 @@ class MainWindow(uiclass, baseclass):
         # Render signal after Noise addition
         self._render_signal()
 
+    def _on_snr_slider_change(self, value):
+        if self.num_of_signals > 0:
+            self.signal.SNR = value
+            if(value == 100):
+                self.snr_label.setText('∞ DB')
+            else:    
+                self.snr_label.setText(str(value) + ' DB')
 
 def main():
     app = QApplication(sys.argv)

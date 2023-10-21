@@ -24,7 +24,7 @@ class CreateSignalWindow(uiclass, baseclass):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("Composer - Create Signal")
-        self.x = [i/10 for i in range(-10000, 10000)]
+        self.x = [i/1000 for i in range(0, 1000)]
         self.y = []
 
         self.cosine_frequency = 1
@@ -79,7 +79,7 @@ class CreateSignalWindow(uiclass, baseclass):
         self.sine_phase_slider.setMinimum(-180)
         self.sine_phase_slider.setMaximum(180)
 
-        self.signal_graph.setXRange(-180,180)
+        self.signal_graph.setXRange(0,1)
         self._update_plot()
 
 
@@ -180,8 +180,8 @@ class CreateSignalWindow(uiclass, baseclass):
     def _generate_list(self):
         self.y.clear()
         for i in self.x:
-            cosine_term = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency * self.cosine_frequency_unit *(i - self.cosine_phase) * (pi/180))
-            sine_term = self.sine_amplitude * self.sine_amplitude_unit * cos(self.sine_frequency * self.sine_frequency_unit *(i - self.sine_phase) * (pi/180))
+            cosine_term = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency * self.cosine_frequency_unit *(i - self.cosine_phase) * (2*pi))
+            sine_term = self.sine_amplitude * self.sine_amplitude_unit * sin(self.sine_frequency * self.sine_frequency_unit *(i - self.sine_phase) * (2*pi))
             self.y.append(cosine_term + sine_term)
 
     def save_signal(self):
