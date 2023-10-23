@@ -76,19 +76,27 @@ class MainWindow(uiclass, baseclass):
 
     def _open_signal_file(self):
         self._reset()
-        # self.signal: Signal = get_signal_from_file(self)
-
-        # Create a cos wave signal for testing
-        sin_freq_hz = 75
-        t = np.linspace(0, 1, 1000)
-        y = np.cos(2 * np.pi * sin_freq_hz * t)
-        self.signal = Signal(t, y)
+        self.signal: Signal = get_signal_from_file(self)
         self.original_signal = copy.deepcopy(self.signal)
         # Render the CONTINUOUS signal
         pen_c = pg.mkPen(color=(255, 255, 255))
         self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
         # self.f_sampling = 2*self.signal.get_max_freq()
         self._render_signal()
+
+
+
+        # Create a cos wave signal for testing
+        # sin_freq_hz = 75
+        # t = np.linspace(0, 1, 1000)
+        # y = np.cos(2 * np.pi * sin_freq_hz * t)
+        # self.signal = Signal(t, y)
+        # self.original_signal = copy.deepcopy(self.signal)
+        # # Render the CONTINUOUS signal
+        # pen_c = pg.mkPen(color=(255, 255, 255))
+        # self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
+        # # self.f_sampling = 2*self.signal.get_max_freq()
+        # self._render_signal()
 
     def _on_freq_slider_change(self, value):
         if self.num_of_signals > 0:

@@ -99,16 +99,15 @@ class CreateSignalWindow(uiclass, baseclass):
         self.signal_graph.plot(self.x,self.y)   
 
     def _generate_list(self):
-        self.y.clear()
-        self.x = [i/100 for i in range(0, math.ceil(1000/(2*self.cosine_frequency)) * 100)]
-        for i in self.x:
-            cosine_term = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *(i - self.cosine_phase) * (2*pi))
-            self.y.append(cosine_term)
+        self.x = np.linspace(0, math.ceil(1000 / (2 * self.cosine_frequency)), 1000)
+        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *(self.x - self.cosine_phase) * (2*pi))
+
+
 
     def save_signal(self):
         # Create a Signal object from the input data
-        t = np.array(self.x)
-        y = np.array(self.y)
+        t = self.x
+        y = self.y
         signal = Signal(t, y)
         
         # Emit the signal_saved signal with the Signal object as the argument
