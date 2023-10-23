@@ -17,7 +17,6 @@ import numpy as np
 mainwindow_ui_file_path = os.path.join(os.path.dirname(__file__), 'views', 'mainwindow.ui')
 uiclass, baseclass = pg.Qt.loadUiType(mainwindow_ui_file_path)
 
-# TODO: Change this later
 MAX_F_SAMPLING = 500
 
 
@@ -39,8 +38,13 @@ class MainWindow(uiclass, baseclass):
         self.snr_slider.valueChanged.connect(self._on_snr_slider_change)
         self.actionComposer.triggered.connect(self.open_composer)
         self.clear_button.clicked.connect(self._clear_signal)
+        self.actionClear_signal.triggered.connect(self._clear_signal)
         self.freq_plus_button.clicked.connect(self._add_freq_unit)
         self.freq_minus_button.clicked.connect(self._sub_freq_unit)
+        self.actionExit.triggered.connect(self._close_app)
+
+    def _close_app(self) -> None:
+        QApplication.quit()
 
     def open_composer(self):
         # Initialize the create_signal_window attribute
@@ -66,7 +70,11 @@ class MainWindow(uiclass, baseclass):
         self.signal = signal
         self.original_signal = copy.deepcopy(self.signal)
         self.f_sampling = 2 * self.signal.get_max_freq()
-        self.original_signal_graph.setXRange(0,self.original_signal.x_vec[-1]/50)
+        x_range_lower = 0
+        x_range_upper = self.original_signal.x_vec[-1]/50
+        self.original_signal_graph.setXRange(x_range_lower, x_range_upper)
+        self.reconstructed_signal_graph.setXRange(x_range_lower, x_range_upper)
+        self.error_signal_graph.setXRange(x_range_lower, x_range_upper)
         # self.original_signal_graph.setYRange(-1.5,1.5)
 
         self._render_signal()
@@ -83,9 +91,13 @@ class MainWindow(uiclass, baseclass):
         # Render the CONTINUOUS signal
         pen_c = pg.mkPen(color=(255, 255, 255))
         self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
-        # self.f_sampling = 2*self.signal.get_max_freq()
+        
+        # Set viewport limits
         self.original_signal_graph.setXRange(0,2.8)
+        self.reconstructed_signal_graph.setXRange(0,2.8)
+        self.error_signal_graph.setXRange(0,2.8)
         self.original_signal_graph.setYRange(-1,-0.1)
+        self.reconstructed_signal_graph.setYRange(-1,-0.1)
         self._render_signal()
 
 
@@ -218,6 +230,7 @@ class MainWindow(uiclass, baseclass):
         self.f_sampling = 150  # Initial f_sampling, can't be = zero (VIMP) to avoid logical and mathematical errors.
         self.sampling_freq_slider.setMinimum(0)
         self.sampling_freq_slider.setMaximum(MAX_F_SAMPLING)
+        self.sampling_freq_slider.setValue(0)
         self.snr_slider.setMinimum(0)
         self.snr_slider.setMaximum(10)
         self.snr_slider.setValue(0)

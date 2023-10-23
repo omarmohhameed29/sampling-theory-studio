@@ -744,7 +744,7 @@ padding-bottom: 5px;</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -752,13 +752,15 @@ padding-bottom: 5px;</string>
      <string>File</string>
     </property>
     <addaction name="actionOpen_Signal"/>
-    <addaction name="actionExit"/>
     <addaction name="actionComposer"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionClear_signal"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -788,7 +790,17 @@ padding-bottom: 5px;</string>
   </action>
   <action name="actionComposer">
    <property name="text">
-    <string>Composer</string>
+    <string>Compose Signal</string>
+   </property>
+  </action>
+  <action name="actionClear_Signal">
+   <property name="text">
+    <string>Clear Signal</string>
+   </property>
+  </action>
+  <action name="actionClear_signal">
+   <property name="text">
+    <string>Clear Signal</string>
    </property>
   </action>
  </widget>
