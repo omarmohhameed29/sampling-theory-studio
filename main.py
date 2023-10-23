@@ -149,7 +149,14 @@ class MainWindow(uiclass, baseclass):
         # SNR = Psig / Pnoise
 
         # Calculate instantaneous power
-        instantaneous_power = self.signal.y_vec ** 2
+
+        # check that the passed vectors are in numpy array
+        try:
+            instantaneous_power = self.signal.y_vec ** 2
+        except:
+            self.signal.y_vec = np.array(self.signal.y_vec)
+            self.signal.x_vec = np.array(self.signal.x_vec)
+            instantaneous_power = self.signal.y_vec ** 2
 
         # Calculate average power
         average_power = np.mean(instantaneous_power)
@@ -169,6 +176,11 @@ class MainWindow(uiclass, baseclass):
             self.signal.SNR = value
             self.snr_label.setText(str(value))
             self.add_gaussian_noise()
+
+            # render the new graph
+            self.original_signal_graph.clear()
+            pen_c = pg.mkPen(color=(255, 255, 255))
+            self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
             self._render_signal()
 
     def _double_Fsampling(self):
