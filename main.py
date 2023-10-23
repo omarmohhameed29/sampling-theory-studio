@@ -64,10 +64,9 @@ class MainWindow(uiclass, baseclass):
         self.original_signal_graph.plot(signal.x_vec, signal.y_vec, pen=pen_c)
 
         self.signal = signal
-        self.f_sampling = 2*self.signal.get_max_freq()
+        self.f_sampling = 2 * self.signal.get_max_freq()
 
         self._render_signal()
-        
 
     @pyqtSlot()
     def close_create_signal_window(self):
@@ -77,7 +76,7 @@ class MainWindow(uiclass, baseclass):
     def _open_signal_file(self):
         self._reset()
         # self.signal: Signal = get_signal_from_file(self)
-        
+
         # Create a cos wave signal for testing
         sin_freq_hz = 75
         t = np.linspace(0, 1, 1000)
@@ -95,7 +94,7 @@ class MainWindow(uiclass, baseclass):
             self._render_signal()
 
     def _render_signal(self):
-        
+
         self.num_of_signals += 1
         self._resample()
         self._reconstruct()
@@ -146,36 +145,49 @@ class MainWindow(uiclass, baseclass):
         self.error_curve = self.error_signal_graph.plot(self.signal.x_vec, y_vec_error, pen=pen_b)
 
     def add_gaussian_noise(self):
-        signal_amplitude = np.max(np.abs(self.signal.y_vec))
-        SNR_DB = self.signal.SNR
-        SNR_Linear = 10 ** (SNR_DB / 10)
-        noise_amplitude = signal_amplitude / np.sqrt(2 * SNR_Linear)
-        noise = np.random.normal(0, noise_amplitude, len(self.signal.y_vec))
+        # SNR = Psig / Pnoise
+        # Calculate instantaneous power
+        # todo every time we add noise to the original signal
+        original_signal = self.signal
+        print(original_signal.y_vec[:5])
+        instantaneous_power = original_signal.y_vec ** 2
 
-        # update y_vec for original signal
+        # Calculate average power
+        average_power = np.mean(instantaneous_power)
+
+        SNR = self.signal.SNR
+        print('signal snr:', SNR)
+
+        average_noise = average_power * SNR
+        noise = np.random.normal(0, average_noise, len(self.signal.y_vec))
+        print("average_noise:", average_noise)
+
         self.signal.y_vec += noise
 
         # render noised signal
         self._render_signal()
 
     def _on_snr_slider_change(self, value):
+        value /= 10
+        print("Snr slider value:", value)
         if self.num_of_signals > 0:
             self.signal.SNR = value
-            if (value == 100):
-                self.snr_label.setText('∞ DB')
+            if value == 0:
+                #  todo render the original signal
+                print("restore original signal")
             else:
-                self.snr_label.setText(str(value) + ' DB')
+                self.snr_label.setText(str(value))
                 self.add_gaussian_noise()
 
     def _double_Fsampling(self):
         if self.num_of_signals > 0 and self.f_sampling < MAX_F_SAMPLING:
-            self.f_sampling = 2*self.f_sampling
+            self.f_sampling = 2 * self.f_sampling
             self._render_signal()
 
     def _reset(self) -> None:
         self.signal = None
 
-         # Re-initialize UI state
+        # Re-initialize UI state
         self.sampled_signal: Signal
         self.reconstructed_signal: Signal
         self.error_signal: Signal
@@ -186,9 +198,9 @@ class MainWindow(uiclass, baseclass):
         self.sampling_freq_slider.setMinimum(0)
         self.sampling_freq_slider.setMaximum(MAX_F_SAMPLING)
         self.snr_slider.setMinimum(0)
-        self.snr_slider.setMaximum(100)
-        self.snr_slider.setValue(100)
-        self.num_of_signals = 0 
+        self.snr_slider.setMaximum(10)
+        self.snr_slider.setValue(0)
+        self.num_of_signals = 0
 
         # Clear graphs
         self.original_signal_graph.clear()
@@ -203,7 +215,7 @@ class MainWindow(uiclass, baseclass):
             self.f_sampling += 1
             self._on_freq_slider_change(self.f_sampling)
 
-    def _sub_freq_unit(self) -> None: 
+    def _sub_freq_unit(self) -> None:
         if self.f_sampling - 1 >= 0:
             self.f_sampling -= 1
             self._on_freq_slider_change(self.f_sampling)
