@@ -1,6 +1,6 @@
 import os
 import sys
-
+import copy
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import pyqtSlot
@@ -64,6 +64,7 @@ class MainWindow(uiclass, baseclass):
         self.original_signal_graph.plot(signal.x_vec, signal.y_vec, pen=pen_c)
 
         self.signal = signal
+        self.original_signal = copy.deepcopy(self.signal)
         self.f_sampling = 2 * self.signal.get_max_freq()
 
         self._render_signal()
@@ -82,6 +83,7 @@ class MainWindow(uiclass, baseclass):
         t = np.linspace(0, 1, 1000)
         y = np.cos(2 * np.pi * sin_freq_hz * t)
         self.signal = Signal(t, y)
+        self.original_signal = copy.deepcopy(self.signal)
         # Render the CONTINUOUS signal
         pen_c = pg.mkPen(color=(255, 255, 255))
         self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
@@ -94,7 +96,6 @@ class MainWindow(uiclass, baseclass):
             self._render_signal()
 
     def _render_signal(self):
-
         self.num_of_signals += 1
         self._resample()
         self._reconstruct()
@@ -146,38 +147,29 @@ class MainWindow(uiclass, baseclass):
 
     def add_gaussian_noise(self):
         # SNR = Psig / Pnoise
+
         # Calculate instantaneous power
-        # todo every time we add noise to the original signal
-        original_signal = self.signal
-        print(original_signal.y_vec[:5])
-        instantaneous_power = original_signal.y_vec ** 2
+        instantaneous_power = self.signal.y_vec ** 2
 
         # Calculate average power
         average_power = np.mean(instantaneous_power)
 
         SNR = self.signal.SNR
-        print('signal snr:', SNR)
 
         average_noise = average_power * SNR
         noise = np.random.normal(0, average_noise, len(self.signal.y_vec))
-        print("average_noise:", average_noise)
 
-        self.signal.y_vec += noise
-
-        # render noised signal
-        self._render_signal()
+        # update the original signal not the already noised one
+        self.signal.y_vec = self.original_signal.y_vec + noise
 
     def _on_snr_slider_change(self, value):
         value /= 10
-        print("Snr slider value:", value)
+
         if self.num_of_signals > 0:
             self.signal.SNR = value
-            if value == 0:
-                #  todo render the original signal
-                print("restore original signal")
-            else:
-                self.snr_label.setText(str(value))
-                self.add_gaussian_noise()
+            self.snr_label.setText(str(value))
+            self.add_gaussian_noise()
+            self._render_signal()
 
     def _double_Fsampling(self):
         if self.num_of_signals > 0 and self.f_sampling < MAX_F_SAMPLING:
@@ -201,6 +193,7 @@ class MainWindow(uiclass, baseclass):
         self.snr_slider.setMaximum(10)
         self.snr_slider.setValue(0)
         self.num_of_signals = 0
+        self.noised = False
 
         # Clear graphs
         self.original_signal_graph.clear()
