@@ -67,7 +67,7 @@ class MainWindow(uiclass, baseclass):
         self.original_signal = copy.deepcopy(self.signal)
         self.f_sampling = 2 * self.signal.get_max_freq()
         self.original_signal_graph.setXRange(0,self.original_signal.x_vec[-1]/50)
-        self.original_signal_graph.setYRange(-1.5,1.5)
+        # self.original_signal_graph.setYRange(-1.5,1.5)
 
         self._render_signal()
 
@@ -109,7 +109,6 @@ class MainWindow(uiclass, baseclass):
 
     def _render_signal(self):
         self.num_of_signals += 1
-        print(len(self.signal.x_vec))
         self._resample()
         self._reconstruct()
         self._display_error_signal()
@@ -129,6 +128,7 @@ class MainWindow(uiclass, baseclass):
                 symbolPen=None,
                 symbolBrush=pg.mkBrush(255, 0, 0, 255)
             )
+
 
         self.sampling_freq_label.setText(f"{self.f_sampling}HZ")
         self.sampling_freq_label.repaint()
