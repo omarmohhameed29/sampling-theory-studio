@@ -212,10 +212,7 @@ class MainWindow(uiclass, baseclass):
             self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
             self._render_signal()
 
-    def _double_Fsampling(self):
-        if self.num_of_signals > 0 and self.f_sampling < MAX_F_SAMPLING:
-            self.f_sampling = 2 * self.f_sampling
-            self._render_signal()
+    
 
     def _reset(self) -> None:
         self.signal = None
