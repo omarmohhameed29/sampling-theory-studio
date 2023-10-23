@@ -66,6 +66,8 @@ class MainWindow(uiclass, baseclass):
         self.signal = signal
         self.original_signal = copy.deepcopy(self.signal)
         self.f_sampling = 2 * self.signal.get_max_freq()
+        self.original_signal_graph.setXRange(0,self.original_signal.x_vec[-1]/50)
+        self.original_signal_graph.setYRange(-1.5,1.5)
 
         self._render_signal()
 
@@ -82,6 +84,8 @@ class MainWindow(uiclass, baseclass):
         pen_c = pg.mkPen(color=(255, 255, 255))
         self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
         # self.f_sampling = 2*self.signal.get_max_freq()
+        self.original_signal_graph.setXRange(0,2.8)
+        self.original_signal_graph.setYRange(-1,-0.1)
         self._render_signal()
 
 
@@ -105,6 +109,7 @@ class MainWindow(uiclass, baseclass):
 
     def _render_signal(self):
         self.num_of_signals += 1
+        print(len(self.signal.x_vec))
         self._resample()
         self._reconstruct()
         self._display_error_signal()
@@ -181,7 +186,11 @@ class MainWindow(uiclass, baseclass):
         value /= 10
 
         if self.num_of_signals > 0:
-            self.signal.SNR = value
+            try:
+
+               self.signal.SNR = value
+            except:
+                pass   
             self.snr_label.setText(str(value))
             self.add_gaussian_noise()
 

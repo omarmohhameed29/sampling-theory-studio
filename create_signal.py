@@ -27,8 +27,8 @@ class CreateSignalWindow(uiclass, baseclass):
         self.setWindowTitle("Composer - Create Signal")
 
         self.cosine_frequency = 1
-        self.x = [i/100 for i in range(0,math.ceil(1000/(2*self.cosine_frequency)) * 100)]
-        self.y = []
+        self.x = np.array([])
+        self.y = np.array([])
 
         self.cosine_amplitude = 1
         self.cosine_amplitude_unit = 1
@@ -97,10 +97,12 @@ class CreateSignalWindow(uiclass, baseclass):
         self._generate_list()
         self.signal_graph.clear()
         self.signal_graph.plot(self.x,self.y)   
+        # print(cos(self.x))
 
     def _generate_list(self):
         self.x = np.linspace(0, math.ceil(1000 / (2 * self.cosine_frequency)), 1000)
-        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *(self.x - self.cosine_phase) * (2*pi))
+        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *(self.x- self.cosine_phase * pi/180))
+        # self.y = cos(self.x * 2* pi)
 
 
 
