@@ -1,6 +1,7 @@
 import os
 import sys
 
+# from PyQt6.QtWidgets import QListWidgetItem
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import pyqtSignal
@@ -32,8 +33,8 @@ class CreateSignalWindow(uiclass, baseclass):
 
         self.cosine_amplitude = 1
         self.cosine_amplitude_unit = 1
+        self.cosine_phase = 0
 
-        self.cosine_phase = 0;
 
         # Connecting UI controls to events
         self._initialize_signals_slots()
@@ -64,7 +65,9 @@ class CreateSignalWindow(uiclass, baseclass):
 
        self.cosine_amplitude_comboBox.currentTextChanged.connect(self._on_cosine_amp_combobox_change)
 
+       self.add_component_button.clicked.connect(self.add_signal_component)
        self.save_signal_button.clicked.connect(self.save_signal)
+       self.clear_button.clicked.connect(self.clear_components)
        
 
   
@@ -114,6 +117,54 @@ class CreateSignalWindow(uiclass, baseclass):
         self.signal_saved.emit(signal)
         
         self.window_closed.emit()
+
+    def clear_components(self):
+        self.components_list.clear()
+        self.signal_graph.clear()
+        self.x = np.array([])
+        self.y = np.array([])
+        self.cosine_frequency = 1
+        self.cosine_amplitude = 1
+        self.cosine_phase = 0
+        self.cosine_frequency_slider.setValue(1)
+        self.cosine_amplitude_slider.setValue(1)
+        self.cosine_phase_slider.setValue(0)
+        self.cosine_frequency_value.setText(str(1) + ' Hz')
+        self.cosine_amplitude_value.setText(str(1) + ' '+ self.cosine_amplitude_comboBox.currentText())
+        self.cosine_phase_value.setText(str(0) + '°')
+        self.signal_graph.setXRange(0,10)
+        self.signal_graph.setYRange(-1,1)
+        self._update_plot()
+
+    def add_signal_component(self):
+        #writing item to the list
+        if(self.cosine_amplitude > 1):
+            if(self.cosine_phase > 0):
+                item = QListWidgetItem(f"{self.cosine_amplitude} Cos( {self.cosine_frequency} t - {self.cosine_phase} °)")
+            elif self.cosine_phase < 0:
+                item = QListWidgetItem(f"{self.cosine_amplitude} Cos( {self.cosine_frequency} t + {abs(self.cosine_phase)} °)")
+            else:
+                item = QListWidgetItem(f"{self.cosine_amplitude} Cos( {self.cosine_frequency} t )")
+        else:
+            if(self.cosine_phase > 0):
+                item = QListWidgetItem(f"Cos( {self.cosine_frequency} t - {self.cosine_phase} °)")
+            elif self.cosine_phase < 0:
+                item = QListWidgetItem(f"Cos( {self.cosine_frequency} t + {abs(self.cosine_phase)} ° )")
+            else:
+                item = QListWidgetItem(f"Cos( {self.cosine_frequency} t )")
+        
+
+        self.components_list.addItem(item)
+
+        #changing the plot
+        self.x = np.linspace(0, math.ceil(1000 / (2 * self.cosine_frequency)), 1000)
+        self.y = self.y + ( self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *self.x - (self.cosine_phase * pi/180))  )       
+        
+        self.signal_graph.clear()
+        # self.y = 10 * np.cos(3 * self.x) + 20 * np.cos(6 * self.x)
+        self.signal_graph.plot(self.x,self.y)   
+
+        
         
 def main():
     app = QApplication(sys.argv)
