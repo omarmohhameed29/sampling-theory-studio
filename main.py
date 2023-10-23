@@ -27,22 +27,7 @@ class MainWindow(uiclass, baseclass):
         self.setupUi(self)
         self.setWindowTitle("Sampling Theory Studio")
 
-        # Initialize UI state
-        self.sampled_signal: Signal
-        self.reconstructed_signal: Signal
-        self.error_signal: Signal
-        self.sampling_curve = None
-        self.reconstruct_curve = None
-        self.error_curve = None
-        self.f_sampling = 150  # Initial f_sampling, can't be = zero (VIMP) to avoid logical and mathematical errors.
-        self.sampling_freq_slider.setMinimum(0)
-        self.sampling_freq_slider.setMaximum(MAX_F_SAMPLING)
-        self.snr_slider.setMinimum(0)
-        self.snr_slider.setMaximum(100)
-        self.snr_slider.setValue(100)
-        self.num_of_signals = 0  # Calculate number of graphs to prevent slider error when no graph displayed
-        # self.original_signal_graph.setXRange(0, 1)
-        # self.reconstructed_signal_graph.setXRange(0, 1)
+        self._reset()
 
         # Connecting UI controls to events
         self._initialize_signals_slots()
@@ -53,7 +38,9 @@ class MainWindow(uiclass, baseclass):
         self.sampling_freq_slider.valueChanged.connect(self._on_freq_slider_change)
         self.snr_slider.valueChanged.connect(self._on_snr_slider_change)
         self.actionComposer.triggered.connect(self.open_composer)
-        self.double_Fmax.clicked.connect(self._double_Fsampling)
+        self.clear_button.clicked.connect(self._clear_signal)
+        self.freq_plus_button.clicked.connect(self._add_freq_unit)
+        self.freq_minus_button.clicked.connect(self._sub_freq_unit)
 
     def open_composer(self):
         # Initialize the create_signal_window attribute
@@ -71,6 +58,7 @@ class MainWindow(uiclass, baseclass):
 
     @pyqtSlot(Signal)
     def render_composer_signal(self, signal):
+        self._reset()
         # Render the CONTINUOUS signal
         pen_c = pg.mkPen(color=(255, 255, 255))
         self.original_signal_graph.plot(signal.x_vec, signal.y_vec, pen=pen_c)
@@ -87,19 +75,18 @@ class MainWindow(uiclass, baseclass):
         self.create_signal_window.close()
 
     def _open_signal_file(self):
-        self.signal: Signal = get_signal_from_file(self)
-
-        # Create a cos wave signal for testing
+        self._reset()
+        # self.signal: Signal = get_signal_from_file(self)
         
-        # sin_freq_hz = 20
-        # t = np.linspace(0, 1, 1000)
-        # y = np.cos(2 * np.pi * sin_freq_hz * t)
-        # self.signal = Signal(t, y)
-
+        # Create a cos wave signal for testing
+        sin_freq_hz = 75
+        t = np.linspace(0, 1, 1000)
+        y = np.cos(2 * np.pi * sin_freq_hz * t)
+        self.signal = Signal(t, y)
         # Render the CONTINUOUS signal
         pen_c = pg.mkPen(color=(255, 255, 255))
         self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
-        self.f_sampling = 2*self.signal.get_max_freq()
+        # self.f_sampling = 2*self.signal.get_max_freq()
         self._render_signal()
 
     def _on_freq_slider_change(self, value):
@@ -170,9 +157,6 @@ class MainWindow(uiclass, baseclass):
 
         # render noised signal
         self._render_signal()
-    
-
-
 
     def _on_snr_slider_change(self, value):
         if self.num_of_signals > 0:
@@ -187,6 +171,42 @@ class MainWindow(uiclass, baseclass):
         if self.num_of_signals > 0 and self.f_sampling < MAX_F_SAMPLING:
             self.f_sampling = 2*self.f_sampling
             self._render_signal()
+
+    def _reset(self) -> None:
+        self.signal = None
+
+         # Re-initialize UI state
+        self.sampled_signal: Signal
+        self.reconstructed_signal: Signal
+        self.error_signal: Signal
+        self.sampling_curve = None
+        self.reconstruct_curve = None
+        self.error_curve = None
+        self.f_sampling = 150  # Initial f_sampling, can't be = zero (VIMP) to avoid logical and mathematical errors.
+        self.sampling_freq_slider.setMinimum(0)
+        self.sampling_freq_slider.setMaximum(MAX_F_SAMPLING)
+        self.snr_slider.setMinimum(0)
+        self.snr_slider.setMaximum(100)
+        self.snr_slider.setValue(100)
+        self.num_of_signals = 0 
+
+        # Clear graphs
+        self.original_signal_graph.clear()
+        self.reconstructed_signal_graph.clear()
+        self.error_signal_graph.clear()
+
+    def _clear_signal(self) -> None:
+        self._reset()
+
+    def _add_freq_unit(self) -> None:
+        if self.f_sampling + 1 <= MAX_F_SAMPLING:
+            self.f_sampling += 1
+            self._on_freq_slider_change(self.f_sampling)
+
+    def _sub_freq_unit(self) -> None: 
+        if self.f_sampling - 1 >= 0:
+            self.f_sampling -= 1
+            self._on_freq_slider_change(self.f_sampling)
 
 
 def main():
