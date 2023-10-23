@@ -107,8 +107,8 @@ class CreateSignalWindow(uiclass, baseclass):
 
     def save_signal(self):
         # Create a Signal object from the input data
-        t = self.x
-        y = self.y
+        t = np.array(self.x)
+        y = np.array(self.y)
         signal = Signal(t, y)
         
         # Emit the signal_saved signal with the Signal object as the argument
