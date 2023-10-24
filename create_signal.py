@@ -9,6 +9,7 @@ import pyqtgraph as pg
 from numpy import sin, cos, pi
 import numpy as np
 import math
+from PyQt6.QtCore import Qt
 
 from models.signal import Signal
 
@@ -30,10 +31,16 @@ class CreateSignalWindow(uiclass, baseclass):
         self.cosine_frequency = 1
         self.x = np.array([])
         self.y = np.array([])
+        # self.components_x = []
+        # self.components_y = []
 
         self.cosine_amplitude = 1
         self.cosine_amplitude_unit = 1
         self.cosine_phase = 0
+
+        self.functions = []
+        self.components_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.components_list.customContextMenuRequested.connect(self.showContextMenu)
 
 
         # Connecting UI controls to events
@@ -67,10 +74,12 @@ class CreateSignalWindow(uiclass, baseclass):
 
        self.add_component_button.clicked.connect(self.add_signal_component)
        self.save_signal_button.clicked.connect(self.save_signal)
-       self.clear_button.clicked.connect(self.clear_components)
+       self.clear_button.clicked.connect(self.clear_components) 
+       self.clear_button.hide()
+       self.actionClear_All.triggered.connect(self.clear_components)
        
 
-  
+    
     def _on_cosine_freq_slider_change(self, value):
         self.cosine_frequency = value
         self.cosine_frequency_value.setText(str(value) + ' Hz')
@@ -97,20 +106,44 @@ class CreateSignalWindow(uiclass, baseclass):
         self._update_plot()
 
     def _update_plot(self):
-        self._generate_list()
+        equation = self._generate_list()
         self.signal_graph.clear()
-        self.signal_graph.plot(self.x,self.y)   
+        list_y = []
+        for x in self.x:
+           y = 0
+           y+=equation(x)
+           for eq in self.functions:
+               y+= eq(x)
+           list_y.append(y)    
+        self.signal_graph.plot(self.x,list_y) 
+        # self.functions.pop()   
 
     def _generate_list(self):
         self.x = np.linspace(0, math.ceil(1000 / (2 * self.cosine_frequency)), 1000)
-        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *(self.x- self.cosine_phase * pi/180))
+        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *self.x - (self.cosine_phase * pi/180))
+        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * math.cos(freq * x - (phase * math.pi/180)) 
+        return equation
+        # self.functions.append(eqution)
 
 
 
     def save_signal(self):
         # Create a Signal object from the input data
+        if len(self.functions) < 1:
+            msg_box = QMessageBox() 
+            # msg_box.setIcon(QMessageBox.warning)
+            msg_box.setWindowTitle("Warning")
+            msg_box.setText("You have to add components first.")
+            msg_box.exec()
+            return
+        list_y = []
+        for x in self.x:
+           y = 0
+           for eq in self.functions:
+               y+= eq(x)
+           list_y.append(y)    
         t = self.x
-        y = self.y
+        y = list_y
         signal = Signal(t, y)
         
         # Emit the signal_saved signal with the Signal object as the argument
@@ -123,6 +156,7 @@ class CreateSignalWindow(uiclass, baseclass):
         self.signal_graph.clear()
         self.x = np.array([])
         self.y = np.array([])
+        self.functions.clear()
         self.cosine_frequency = 1
         self.cosine_amplitude = 1
         self.cosine_phase = 0
@@ -138,13 +172,13 @@ class CreateSignalWindow(uiclass, baseclass):
 
     def add_signal_component(self):
         #writing item to the list
-        if(self.cosine_amplitude > 1):
+        if(self.cosine_amplitude > 1 or self.cosine_amplitude_unit != 1):
             if(self.cosine_phase > 0):
-                item = QListWidgetItem(f"{self.cosine_amplitude} Cos( {self.cosine_frequency} t - {self.cosine_phase} °)")
+                item = QListWidgetItem(f"{self.cosine_amplitude * self.cosine_amplitude_unit} Cos( {self.cosine_frequency} t - {self.cosine_phase} °)")
             elif self.cosine_phase < 0:
-                item = QListWidgetItem(f"{self.cosine_amplitude} Cos( {self.cosine_frequency} t + {abs(self.cosine_phase)} °)")
+                item = QListWidgetItem(f"{self.cosine_amplitude * self.cosine_amplitude_unit} Cos( {self.cosine_frequency} t + {abs(self.cosine_phase)} °)")
             else:
-                item = QListWidgetItem(f"{self.cosine_amplitude} Cos( {self.cosine_frequency} t )")
+                item = QListWidgetItem(f"{self.cosine_amplitude * self.cosine_amplitude_unit} Cos( {self.cosine_frequency} t )")
         else:
             if(self.cosine_phase > 0):
                 item = QListWidgetItem(f"Cos( {self.cosine_frequency} t - {self.cosine_phase} °)")
@@ -158,14 +192,26 @@ class CreateSignalWindow(uiclass, baseclass):
 
         #changing the plot
         self.x = np.linspace(0, math.ceil(1000 / (2 * self.cosine_frequency)), 1000)
-        self.y = self.y + ( self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *self.x - (self.cosine_phase * pi/180))  )       
-        
-        self.signal_graph.clear()
-        # self.y = 10 * np.cos(3 * self.x) + 20 * np.cos(6 * self.x)
-        self.signal_graph.plot(self.x,self.y)   
+        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *self.x - (self.cosine_phase * pi/180))     
+        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * math.cos(freq * x - (phase * math.pi/180)) 
+        self.functions.append(equation)
+        self._update_plot()
 
-        
-        
+    def showContextMenu(self, pos):
+         selected_item = self.components_list.itemAt(pos)
+
+         if selected_item:
+            selected_index = self.components_list.row(selected_item)
+            context_menu = QMenu(self)
+            action1 = context_menu.addAction("Remove Component")
+            action = context_menu.exec(QCursor.pos())
+            if action == action1:
+                self.remove_component(selected_index)  
+
+    def remove_component(self, index):
+        self.functions.pop(index)
+        self.components_list.takeItem(index)
+        self._update_plot()
 def main():
     app = QApplication(sys.argv)
     window = CreateSignalWindow()

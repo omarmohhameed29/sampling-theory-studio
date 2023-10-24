@@ -38,11 +38,18 @@ class MainWindow(uiclass, baseclass):
         self.snr_slider.valueChanged.connect(self._on_snr_slider_change)
         self.actionComposer.triggered.connect(self.open_composer)
         self.clear_button.clicked.connect(self._clear_signal)
+        self.clear_button.hide()
         self.actionClear_signal.triggered.connect(self._clear_signal)
         self.freq_plus_button.clicked.connect(self._add_freq_unit)
         self.freq_minus_button.clicked.connect(self._sub_freq_unit)
         self.actionExit.triggered.connect(self._close_app)
+        self.actionControls_Panel.triggered.connect(self.hide_controls)
 
+    def hide_controls(self):
+         if self.frame.isHidden():
+            self.frame.show()
+         else:
+            self.frame.hide()
     def _close_app(self) -> None:
         QApplication.quit()
 
@@ -71,10 +78,12 @@ class MainWindow(uiclass, baseclass):
         self.original_signal = copy.deepcopy(self.signal)
         self.f_sampling = 2 * self.signal.get_max_freq()
         x_range_lower = 0
-        x_range_upper = self.original_signal.x_vec[-1]/50
+        x_range_upper = self.original_signal.x_vec[-1]/25
         self.original_signal_graph.setXRange(x_range_lower, x_range_upper)
         self.reconstructed_signal_graph.setXRange(x_range_lower, x_range_upper)
         self.error_signal_graph.setXRange(x_range_lower, x_range_upper)
+
+        self.original_signal_graph.setYRange(np.min(self.original_signal.y_vec), np.max(self.original_signal.y_vec))
         # self.original_signal_graph.setYRange(-1.5,1.5)
 
         self._render_signal()
