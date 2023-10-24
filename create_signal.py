@@ -174,18 +174,18 @@ class CreateSignalWindow(uiclass, baseclass):
         #writing item to the list
         if(self.cosine_amplitude > 1 or self.cosine_amplitude_unit != 1):
             if(self.cosine_phase > 0):
-                item = QListWidgetItem(f"{self.cosine_amplitude * self.cosine_amplitude_unit} Cos( {self.cosine_frequency} t - {self.cosine_phase} °)")
+                item = QListWidgetItem(f"{self.cosine_amplitude * self.cosine_amplitude_unit} Cos( 2Π ({self.cosine_frequency}) t - {self.cosine_phase} °)")
             elif self.cosine_phase < 0:
-                item = QListWidgetItem(f"{self.cosine_amplitude * self.cosine_amplitude_unit} Cos( {self.cosine_frequency} t + {abs(self.cosine_phase)} °)")
+                item = QListWidgetItem(f"{self.cosine_amplitude * self.cosine_amplitude_unit} Cos( 2Π ({self.cosine_frequency}) t + {abs(self.cosine_phase)} °)")
             else:
-                item = QListWidgetItem(f"{self.cosine_amplitude * self.cosine_amplitude_unit} Cos( {self.cosine_frequency} t )")
+                item = QListWidgetItem(f"{self.cosine_amplitude * self.cosine_amplitude_unit} Cos( 2Π ({self.cosine_frequency}) t )")
         else:
             if(self.cosine_phase > 0):
-                item = QListWidgetItem(f"Cos( {self.cosine_frequency} t - {self.cosine_phase} °)")
+                item = QListWidgetItem(f"Cos( 2Π ({self.cosine_frequency}) t - {self.cosine_phase} °)")
             elif self.cosine_phase < 0:
-                item = QListWidgetItem(f"Cos( {self.cosine_frequency} t + {abs(self.cosine_phase)} ° )")
+                item = QListWidgetItem(f"Cos( 2Π ({self.cosine_frequency}) t + {abs(self.cosine_phase)} ° )")
             else:
-                item = QListWidgetItem(f"Cos( {self.cosine_frequency} t )")
+                item = QListWidgetItem(f"Cos( 2Π ({self.cosine_frequency}) t )")
         
 
         self.components_list.addItem(item)
