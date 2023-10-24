@@ -29,6 +29,7 @@ class MainWindow(uiclass, baseclass):
         self._reset()
 
         # Connecting UI controls to events
+        self.error_signal_graph.setYRange(0,5)
         self._initialize_signals_slots()
 
     def _initialize_signals_slots(self):
