@@ -45,6 +45,7 @@ class MainWindow(uiclass, baseclass):
         self.freq_minus_button.clicked.connect(self._sub_freq_unit)
         self.actionExit.triggered.connect(self._close_app)
         self.actionControls_Panel.triggered.connect(self.hide_controls)
+        self.fmax_button.clicked.connect(self._double_fsampling)
 
     def hide_controls(self):
          if self.frame.isHidden():
@@ -77,7 +78,7 @@ class MainWindow(uiclass, baseclass):
 
         self.signal = signal
         self.original_signal = copy.deepcopy(self.signal)
-        self.f_sampling = 2 * self.signal.get_max_freq()
+        # self.f_sampling = 2 * self.signal.get_max_freq()
         x_range_lower = 0
         x_range_upper = self.original_signal.x_vec[-1]/25
         self.original_signal_graph.setXRange(x_range_lower, x_range_upper)
@@ -86,6 +87,7 @@ class MainWindow(uiclass, baseclass):
 
         self.original_signal_graph.setYRange(np.min(self.original_signal.y_vec), np.max(self.original_signal.y_vec))
         # self.original_signal_graph.setYRange(-1.5,1.5)
+        
 
         self._render_signal()
 
@@ -108,6 +110,7 @@ class MainWindow(uiclass, baseclass):
         self.error_signal_graph.setXRange(0,2.8)
         self.original_signal_graph.setYRange(-1,-0.1)
         self.reconstructed_signal_graph.setYRange(-1,-0.1)
+        # self.f_sampling = 2 * self.signal.get_max_freq()
         self._render_signal()
 
 
@@ -243,6 +246,8 @@ class MainWindow(uiclass, baseclass):
         self.snr_slider.setValue(0)
         self.num_of_signals = 0
         self.noised = False
+        self.current_sampling_multiplier = 2
+        self.fmax_button.setText(f"{self.current_sampling_multiplier}x Fmax")
 
         # Clear graphs
         self.original_signal_graph.clear()
@@ -261,6 +266,14 @@ class MainWindow(uiclass, baseclass):
         if self.f_sampling - 1 >= 0:
             self.f_sampling -= 1
             self._on_freq_slider_change(self.f_sampling)
+
+    def _double_fsampling(self) -> None:
+        self.f_sampling = self.signal.get_max_freq() * self.current_sampling_multiplier
+        self._on_freq_slider_change(self.f_sampling)
+        if (self.current_sampling_multiplier+1) * self.signal.get_max_freq() <= MAX_F_SAMPLING:
+            self.current_sampling_multiplier += 1
+            self.fmax_button.setText(f"{self.current_sampling_multiplier}x Fmax")
+        
 
 
 def main():

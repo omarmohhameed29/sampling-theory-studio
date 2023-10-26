@@ -634,6 +634,17 @@ color:  #2196F3;</string>
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="fmax_button">
+         <property name="styleSheet">
+          <string notr="true">padding: 10px
+</string>
+         </property>
+         <property name="text">
+          <string>PushButton</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
           <widget class="QPushButton" name="freq_minus_button">
