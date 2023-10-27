@@ -45,7 +45,11 @@ class MainWindow(uiclass, baseclass):
         self.freq_minus_button.clicked.connect(self._sub_freq_unit)
         self.actionExit.triggered.connect(self._close_app)
         self.actionControls_Panel.triggered.connect(self.hide_controls)
-        self.fmax_button.clicked.connect(self._double_fsampling)
+        # self.fmax_button.clicked.connect(self._double_fsampling)
+        self.x1_fm_button.clicked.connect(lambda _ : self._setFsToMultiplesFm(1))
+        self.x2_fm_button.clicked.connect(lambda _ : self._setFsToMultiplesFm(2))
+        self.x3_fm_button.clicked.connect(lambda _ : self._setFsToMultiplesFm(3))
+        self.x4_fm_button.clicked.connect(lambda _ : self._setFsToMultiplesFm(4))
 
     def hide_controls(self):
          if self.frame.isHidden():
@@ -121,11 +125,6 @@ class MainWindow(uiclass, baseclass):
         if self.num_of_signals > 0:
             self.f_sampling = value
             self._render_signal()
-            try:
-                self.current_sampling_multiplier = math.ceil(self.f_sampling / self.signal.get_max_freq())
-            except ZeroDivisionError as e:
-                pass
-            self.fmax_button.setText(f"{self.current_sampling_multiplier}x Fmax")
 
     def _render_signal(self):
         self.num_of_signals += 1
@@ -241,8 +240,6 @@ class MainWindow(uiclass, baseclass):
         self.snr_slider.setValue(0)
         self.num_of_signals = 0
         self.noised = False
-        self.current_sampling_multiplier = 2
-        self.fmax_button.setText(f"{self.current_sampling_multiplier}x Fmax")
 
         # Clear graphs
         self.original_signal_graph.clear()
@@ -261,17 +258,11 @@ class MainWindow(uiclass, baseclass):
         if self.f_sampling - 1 >= 0:
             self.f_sampling -= 1
             self._on_freq_slider_change(self.f_sampling)
-
-    def _double_fsampling(self) -> None:
-        # todo signal max freq shouldn't be zero
-        print('signal f_max:', self.signal.get_max_freq())
-        self.f_sampling = self.signal.get_max_freq() * self.current_sampling_multiplier
+    
+    def _setFsToMultiplesFm(self, multiple) -> None:
+        self.f_sampling = self.signal.get_max_freq() * multiple
         self._on_freq_slider_change(self.f_sampling)
         self._render_signal()
-        if (self.current_sampling_multiplier+1) * self.signal.get_max_freq() <= MAX_F_SAMPLING:
-            self.current_sampling_multiplier += 1
-            self.fmax_button.setText(f"{self.current_sampling_multiplier}x Fmax")
-        
 
 
 def main():

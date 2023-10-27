@@ -634,15 +634,59 @@ color:  #2196F3;</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="fmax_button">
-         <property name="styleSheet">
-          <string notr="true">padding: 10px
-</string>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <property name="spacing">
+          <number>-1</number>
          </property>
-         <property name="text">
-          <string>PushButton</string>
-         </property>
-        </widget>
+         <item>
+          <widget class="QPushButton" name="x1_fm_button">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>1xFm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="x2_fm_button">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>2xFm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="x3_fm_button">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>3xFm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="x4_fm_button">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>4xFm</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -755,7 +799,7 @@ padding-bottom: 5px;</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
