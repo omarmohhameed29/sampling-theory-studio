@@ -97,22 +97,24 @@ class MainWindow(uiclass, baseclass):
         self.create_signal_window.close()
 
     def _open_signal_file(self):
-        self._reset()
-        self.signal: Signal = get_signal_from_file(self)
-        self.original_signal = copy.deepcopy(self.signal)
-        # Render the CONTINUOUS signal
-        pen_c = pg.mkPen(color=(255, 255, 255))
-        self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
-        
-        # Set viewport limits
-        self.original_signal_graph.setXRange(0,2.8)
-        self.reconstructed_signal_graph.setXRange(0,2.8)
-        self.error_signal_graph.setXRange(0,2.8)
-        self.original_signal_graph.setYRange(-1,-0.1)
-        self.reconstructed_signal_graph.setYRange(-1,-0.1)
-        # self.f_sampling = 2 * self.signal.get_max_freq()
-        self._render_signal()
+        try:
+            self._reset()
+            self.signal: Signal = get_signal_from_file(self)
+            self.original_signal = copy.deepcopy(self.signal)
+            # Render the CONTINUOUS signal
+            pen_c = pg.mkPen(color=(255, 255, 255))
+            self.original_signal_graph.plot(self.signal.x_vec, self.signal.y_vec, pen=pen_c)
 
+            # Set viewport limits
+            self.original_signal_graph.setXRange(0,2.8)
+            self.reconstructed_signal_graph.setXRange(0,2.8)
+            self.error_signal_graph.setXRange(0,2.8)
+            self.original_signal_graph.setYRange(-1,-0.1)
+            self.reconstructed_signal_graph.setYRange(-1,-0.1)
+            # self.f_sampling = 2 * self.signal.get_max_freq()
+            self._render_signal()
+        except Exception as e:
+            pass
 
 
         # Create a cos wave signal for testing
