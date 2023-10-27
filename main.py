@@ -121,7 +121,10 @@ class MainWindow(uiclass, baseclass):
         if self.num_of_signals > 0:
             self.f_sampling = value
             self._render_signal()
-            self.current_sampling_multiplier = math.ceil(self.f_sampling / self.signal.get_max_freq())
+            try:
+                self.current_sampling_multiplier = math.ceil(self.f_sampling / self.signal.get_max_freq())
+            except ZeroDivisionError as e:
+                pass
             self.fmax_button.setText(f"{self.current_sampling_multiplier}x Fmax")
 
     def _render_signal(self):
@@ -260,8 +263,11 @@ class MainWindow(uiclass, baseclass):
             self._on_freq_slider_change(self.f_sampling)
 
     def _double_fsampling(self) -> None:
+        # todo signal max freq shouldn't be zero
+        print('signal f_max:', self.signal.get_max_freq())
         self.f_sampling = self.signal.get_max_freq() * self.current_sampling_multiplier
         self._on_freq_slider_change(self.f_sampling)
+        self._render_signal()
         if (self.current_sampling_multiplier+1) * self.signal.get_max_freq() <= MAX_F_SAMPLING:
             self.current_sampling_multiplier += 1
             self.fmax_button.setText(f"{self.current_sampling_multiplier}x Fmax")
