@@ -52,7 +52,7 @@ class CreateSignalWindow(uiclass, baseclass):
 
 
         self.cosine_frequency_slider.setMinimum(1)
-        self.cosine_frequency_slider.setMaximum(1000)
+        self.cosine_frequency_slider.setMaximum(250)
 
         self.cosine_amplitude_slider.setMinimum(1)
         self.cosine_amplitude_slider.setMaximum(1000)
