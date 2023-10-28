@@ -17,7 +17,7 @@ import numpy as np
 mainwindow_ui_file_path = os.path.join(os.path.dirname(__file__), 'views', 'mainwindow.ui')
 uiclass, baseclass = pg.Qt.loadUiType(mainwindow_ui_file_path)
 
-MAX_F_SAMPLING = 500
+MAX_F_SAMPLING = 1000
 
 
 class MainWindow(uiclass, baseclass):
