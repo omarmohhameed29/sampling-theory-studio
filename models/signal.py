@@ -19,4 +19,10 @@ class Signal:
         frequencies = fftfreq(len(self.y_vec), d=(self.x_vec[1] - self.x_vec[0]))
         index = np.argmax(np.abs(fft_y))
         fmax = int(6.28 * np.abs(frequencies[index]))
+        # print(fmax)
         return fmax
+    
+    def get_max_freq_open_signal(self):
+        fs = 1/(self.x_vec[1] - self.x_vec[0])
+        fmax = fs/2
+        return int(fmax)

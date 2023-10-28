@@ -103,6 +103,7 @@ class MainWindow(uiclass, baseclass):
     def _open_signal_file(self):
         try:
             self._reset()
+            self.imported = True
             self.signal: Signal = get_signal_from_file(self)
             self.original_signal = copy.deepcopy(self.signal)
             # Render the CONTINUOUS signal
@@ -116,6 +117,7 @@ class MainWindow(uiclass, baseclass):
             self.original_signal_graph.setYRange(-1,-0.1)
             self.reconstructed_signal_graph.setYRange(-1,-0.1)
             # self.f_sampling = 2 * self.signal.get_max_freq()
+            # self.f_sampling = self.signal.get_max_freq_open_signal()
             self._render_signal()
         except Exception as e:
             pass
@@ -240,6 +242,7 @@ class MainWindow(uiclass, baseclass):
         self.snr_slider.setValue(0)
         self.num_of_signals = 0
         self.noised = False
+        self.imported = False
 
         # Clear graphs
         self.original_signal_graph.clear()
@@ -260,7 +263,10 @@ class MainWindow(uiclass, baseclass):
             self._on_freq_slider_change(self.f_sampling)
     
     def _setFsToMultiplesFm(self, multiple) -> None:
-        self.f_sampling = self.signal.get_max_freq() * multiple
+        if self.imported:
+            self.f_sampling = self.signal.get_max_freq_open_signal() * multiple
+        else:
+            self.f_sampling = self.signal.get_max_freq() * multiple
         self._on_freq_slider_change(self.f_sampling)
         self._render_signal()
 
