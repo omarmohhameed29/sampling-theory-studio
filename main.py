@@ -264,9 +264,15 @@ class MainWindow(uiclass, baseclass):
     
     def _setFsToMultiplesFm(self, multiple) -> None:
         if self.imported:
-            self.f_sampling = self.signal.get_max_freq_open_signal() * multiple
+            if self.signal.get_max_freq_open_signal() * multiple > MAX_F_SAMPLING:
+                self.f_sampling = MAX_F_SAMPLING
+            else:
+                self.f_sampling = self.signal.get_max_freq_open_signal() * multiple
         else:
-            self.f_sampling = self.signal.get_max_freq() * multiple
+            if self.signal.get_max_freq() * multiple > MAX_F_SAMPLING:
+                self.f_sampling = MAX_F_SAMPLING
+            else:
+                self.f_sampling = self.signal.get_max_freq() * multiple
         self._on_freq_slider_change(self.f_sampling)
         self._render_signal()
 
