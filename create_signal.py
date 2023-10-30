@@ -60,8 +60,6 @@ class CreateSignalWindow(uiclass, baseclass):
         self.cosine_phase_slider.setMinimum(-180)
         self.cosine_phase_slider.setMaximum(180)
 
-        self.signal_graph.setXRange(0,10)
-        self.signal_graph.setYRange(-1,1)
         self._update_plot()
 
 
@@ -119,9 +117,10 @@ class CreateSignalWindow(uiclass, baseclass):
         # self.functions.pop()   
 
     def _generate_list(self):
-        self.x = np.linspace(0, math.ceil(1000 / (2 * self.cosine_frequency)), 1000)
-        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *self.x - (self.cosine_phase * pi/180))
-        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * math.cos(freq * x - (phase * math.pi/180)) 
+        self.x = np.linspace(0, 7.984, 1000)
+        self.x = np.around(self.x, 3)
+        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * np.cos(2*pi*self.cosine_frequency *self.x + self.cosine_phase)
+        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * np.cos(2*pi*freq * x + phase) 
         return equation
         # self.functions.append(eqution)
 
@@ -166,8 +165,6 @@ class CreateSignalWindow(uiclass, baseclass):
         self.cosine_frequency_value.setText(str(1) + ' Hz')
         self.cosine_amplitude_value.setText(str(1) + ' '+ self.cosine_amplitude_comboBox.currentText())
         self.cosine_phase_value.setText(str(0) + '°')
-        self.signal_graph.setXRange(0,10)
-        self.signal_graph.setYRange(-1,1)
         self._update_plot()
 
     def add_signal_component(self):
@@ -191,9 +188,10 @@ class CreateSignalWindow(uiclass, baseclass):
         self.components_list.addItem(item)
 
         #changing the plot
-        self.x = np.linspace(0, math.ceil(1000 / (2 * self.cosine_frequency)), 1000)
-        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * cos(self.cosine_frequency *self.x - (self.cosine_phase * pi/180))     
-        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * math.cos(freq * x - (phase * math.pi/180)) 
+        self.x = np.linspace(0, 7.984, 1000)
+        self.x = np.around(self.x, 3)
+        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * np.cos(2*pi*self.cosine_frequency *self.x + self.cosine_phase)
+        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * np.cos(2*pi*freq * x + phase) 
         self.functions.append(equation)
         self._update_plot()
 

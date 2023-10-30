@@ -1,4 +1,3 @@
-import math
 from enum import Enum
 from scipy.fft import fft, fftfreq
 import numpy as np
