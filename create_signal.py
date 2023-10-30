@@ -119,8 +119,8 @@ class CreateSignalWindow(uiclass, baseclass):
     def _generate_list(self):
         self.x = np.linspace(0, 7.984, 1000)
         self.x = np.around(self.x, 3)
-        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * np.cos(2*pi*self.cosine_frequency *self.x + self.cosine_phase)
-        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * np.cos(2*pi*freq * x + phase) 
+        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * np.cos(2*pi*self.cosine_frequency *self.x - self.cosine_phase * (pi/180))
+        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * np.cos(2*pi*freq * x - phase * (pi/180)) 
         return equation
         # self.functions.append(eqution)
 
@@ -190,8 +190,8 @@ class CreateSignalWindow(uiclass, baseclass):
         #changing the plot
         self.x = np.linspace(0, 7.984, 1000)
         self.x = np.around(self.x, 3)
-        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * np.cos(2*pi*self.cosine_frequency *self.x + self.cosine_phase)
-        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * np.cos(2*pi*freq * x + phase) 
+        self.y = self.cosine_amplitude * self.cosine_amplitude_unit * np.cos(2*pi*self.cosine_frequency *self.x - self.cosine_phase * (pi/180))
+        equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * np.cos(2*pi*freq * x - phase * (pi/180)) 
         self.functions.append(equation)
         self._update_plot()
 
