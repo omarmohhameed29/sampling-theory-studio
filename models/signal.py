@@ -1,5 +1,6 @@
 from enum import Enum
 from scipy.fft import fft, fftfreq
+from scipy.signal import find_peaks
 import numpy as np
 
 class SignalType(Enum):
@@ -14,12 +15,12 @@ class Signal:
         self.SNR = SNR
 
     def get_max_freq(self):
-        fft_y = fft(self.y_vec)
-        frequencies = fftfreq(len(self.y_vec), d=(self.x_vec[1] - self.x_vec[0]))
-        index = np.argmax(np.abs(fft_y))
-        fmax = int(6.28 * np.abs(frequencies[index]))
-        # print(fmax)
-        return fmax
+         fs = 1 / (self.x_vec[1] - self.x_vec[0])
+         yf = np.fft.fft(self.y_vec)
+         xf = np.fft.fftfreq(len(self.y_vec), 1/fs)
+         max_freq_index = np.argmax(np.abs(yf))
+         max_freq = xf[max_freq_index]
+         return int(np.abs(max_freq))
     
     def get_max_freq_open_signal(self):
         fs = 1/(self.x_vec[1] - self.x_vec[0])
