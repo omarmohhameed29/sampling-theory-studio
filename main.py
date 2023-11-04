@@ -89,7 +89,7 @@ class MainWindow(uiclass, baseclass):
         self.error_signal_graph.setXRange(x_range_lower, x_range_upper)
 
         self.original_signal_graph.setYRange(np.min(self.original_signal.y_vec), np.max(self.original_signal.y_vec))
-        self.f_sampling = self.signal.get_max_freq()
+        self.f_sampling = self.signal.max_freq
         
 
         self._render_signal()
@@ -170,7 +170,7 @@ class MainWindow(uiclass, baseclass):
 
     def _display_error_signal(self):
         # calculate difference between original signal and reconstructed signal
-        y_vec_error = np.abs(self.signal.y_vec - self.reconstructed_signal.y_vec)
+        y_vec_error = np.abs(self.original_signal.y_vec - self.reconstructed_signal.y_vec)
 
         # Render error signal
         pen_b = pg.mkPen(color=(0, 0, 255))
@@ -268,10 +268,10 @@ class MainWindow(uiclass, baseclass):
             else:
                 self.f_sampling = self.signal.get_max_freq_open_signal() * multiple
         else:
-            if self.signal.get_max_freq() * multiple > MAX_F_SAMPLING:
+            if self.signal.max_freq * multiple > MAX_F_SAMPLING:
                 self.f_sampling = MAX_F_SAMPLING
             else:
-                self.f_sampling = self.signal.get_max_freq() * multiple
+                self.f_sampling = self.signal.max_freq * multiple
         self._on_freq_slider_change(self.f_sampling)
         self._render_signal()
 

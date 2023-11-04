@@ -16,8 +16,7 @@ from models.signal import Signal
 mainwindow_ui_file_path = os.path.join(os.path.dirname(__file__), 'views', 'create_signal_window.ui')
 uiclass, baseclass = pg.Qt.loadUiType(mainwindow_ui_file_path)
 
-# TODO: Change this later
-MAX_F_SAMPLING = 500
+
 
 class CreateSignalWindow(uiclass, baseclass):
     signal_saved = pyqtSignal(Signal)
@@ -27,12 +26,11 @@ class CreateSignalWindow(uiclass, baseclass):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("Composer - Create Signal")
+        self.max_freq = 0
 
         self.cosine_frequency = 1
         self.x = np.array([])
         self.y = np.array([])
-        # self.components_x = []
-        # self.components_y = []
 
         self.cosine_amplitude = 1
         self.cosine_amplitude_unit = 1
@@ -120,6 +118,7 @@ class CreateSignalWindow(uiclass, baseclass):
         self.x = np.linspace(0, 7.984, 1000)
         self.x = np.around(self.x, 3)
         self.y = self.cosine_amplitude * self.cosine_amplitude_unit * np.cos(2*pi*self.cosine_frequency *self.x - self.cosine_phase * (pi/180))
+        if self.cosine_frequency > self.max_freq : self.max_freq = self.cosine_frequency
         equation = lambda x, amp=self.cosine_amplitude, unit=self.cosine_amplitude_unit, freq=self.cosine_frequency, phase=self.cosine_phase: amp * unit * np.cos(2*pi*freq * x - phase * (pi/180)) 
         return equation
         # self.functions.append(eqution)
@@ -143,7 +142,7 @@ class CreateSignalWindow(uiclass, baseclass):
            list_y.append(y)    
         t = self.x
         y = list_y
-        signal = Signal(t, y)
+        signal = Signal(t, y, max_freq= self.max_freq)
         
         # Emit the signal_saved signal with the Signal object as the argument
         self.signal_saved.emit(signal)
