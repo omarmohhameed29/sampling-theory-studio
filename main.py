@@ -171,6 +171,8 @@ class MainWindow(uiclass, baseclass):
     def _display_error_signal(self):
         # calculate difference between original signal and reconstructed signal
         y_vec_error = np.abs(self.original_signal.y_vec - self.reconstructed_signal.y_vec)
+        # y_vec_error = np.abs(self.signal.y_vec - self.reconstructed_signal.y_vec)
+        y_vec_error = self.signal.y_vec - self.reconstructed_signal.y_vec
 
         # Render error signal
         pen_b = pg.mkPen(color=(0, 0, 255))
